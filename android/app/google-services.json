@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "758820475430",
+    "firebase_url": "https://uruntakipdb-467fc-default-rtdb.firebaseio.com",
+    "project_id": "uruntakipdb-467fc",
+    "storage_bucket": "uruntakipdb-467fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758820475430:android:e29e5d778afc0321b48ce7",
+        "android_client_info": {
+          "package_name": "com.example.bloc_sample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "758820475430-rn5gt177i7qj9i8icotbim958fogc3qu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC33Rmzx_reLabdCFYph3FYBC5hT5PsR9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "758820475430-rn5gt177i7qj9i8icotbim958fogc3qu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758820475430:android:01439e6557f35eadb48ce7",
+        "android_client_info": {
+          "package_name": "com.example.firebase_test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "758820475430-rn5gt177i7qj9i8icotbim958fogc3qu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC33Rmzx_reLabdCFYph3FYBC5hT5PsR9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "758820475430-rn5gt177i7qj9i8icotbim958fogc3qu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
