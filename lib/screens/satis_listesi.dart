@@ -105,8 +105,10 @@ class _SatisListState extends State<SatisList> {
         ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const SatisEkle()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SatisEkle())
+          );
         },
         child: const Icon(Icons.add),
         shape: RoundedRectangleBorder(

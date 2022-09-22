@@ -1,6 +1,7 @@
 
 import 'package:dropdownfield2/dropdownfield2.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
 class SatisEkle extends StatefulWidget {
@@ -17,12 +18,14 @@ class _SatisEkleState extends State<SatisEkle> {
   final  saleDateController =TextEditingController();
   final  saleSumPriceController =TextEditingController();
 
-  late DatabaseReference dbRef;
+  late DatabaseReference dbRefSatis;
+  late DatabaseReference dbRefUrun;
 
   @override
   void initState() {
     super.initState();
-    dbRef = FirebaseDatabase.instance.ref().child('Students');
+    dbRefSatis = FirebaseDatabase.instance.ref().child('tbl_satislar');
+    dbRefUrun = FirebaseDatabase.instance.ref().child('tbl_urunler');
   }
 
   @override
@@ -47,12 +50,21 @@ class _SatisEkleState extends State<SatisEkle> {
                   controller: saleBasketController,
                   labelText: 'Ürünler',
                   hintText: 'satılacak ürünleri seçiniz',
+                  value: FirebaseAnimatedList(
+                      query: dbRefUrun,
+                      itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                          Animation<double> animation, int index) {
+                        Map urun_list = snapshot.value as Map;
+                        urun_list['key'] = snapshot.key;
+
+                        return urun_list as dynamic;
+                      },
+                ),
                 ),
 
-                ListView(
-                  children: [
-                    Text('data')
-                  ],
+                ListTile(
+                  title: Text('test'),
+
                 ),
                 TextField(
                   controller: saleNotsController,
@@ -80,14 +92,14 @@ class _SatisEkleState extends State<SatisEkle> {
                 ),
                 MaterialButton(
                   onPressed: () {
-                    Map<String, String> students = {
+                    Map<String, String> sale = {
                       'Urunler': saleBasketController.text,
                       'Notlar': saleNotsController.text,
                       'Tarih': saleDateController.text,
                       'ToplamFiyat': saleSumPriceController.text
                     };
 
-                    dbRef.push().set(students);
+                    dbRefSatis.push().set(sale);
 
                   },
                   child: const Text('Kaydet'),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class UrunEkle extends StatefulWidget {
   const UrunEkle({Key? key}) : super(key: key);
 
+
   @override
   State<UrunEkle> createState() => _UrunEkleState();
 }
@@ -15,11 +16,14 @@ class _UrunEkleState extends State<UrunEkle> {
   final  productStockController =TextEditingController();
 
   late DatabaseReference dbRef;
+  late int lastId;
 
   @override
   void initState() {
     super.initState();
     dbRef = FirebaseDatabase.instance.ref().child('tbl_urunler');
+    Map temp=dbRef.limitToLast(1) as Map;
+    lastId=temp.keys.last;
   }
 
 
@@ -79,9 +83,12 @@ class _UrunEkleState extends State<UrunEkle> {
                 MaterialButton(
                   onPressed: () {
                     Map<String, String> students = {
+                      'Id': lastId.toString(),
                       'Urun_adi': productNameController.text,
                       'Fiyati': productPriceController.text,
-                      'Stok': productStockController.text
+                      'Stok': productStockController.text,
+                      'SatilanMiktar': '0',
+                      'ParaBirimi': '₺',
                     };
 
                     dbRef.push().set(students);

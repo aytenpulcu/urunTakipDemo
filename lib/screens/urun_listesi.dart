@@ -13,9 +13,9 @@ class UrunList extends StatefulWidget {
 class _UrunListState extends State<UrunList> {
   Query dbRef = FirebaseDatabase.instance.ref().child('tbl_urunler');
   DatabaseReference reference =
-      FirebaseDatabase.instance.ref().child('tbl_satislar');
+      FirebaseDatabase.instance.ref().child('tbl_urunler');
 
-  Widget listItem({required Map satislar}) {
+  Widget listItem({required Map urunler}) {
     return Container(
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(10),
@@ -26,21 +26,21 @@ class _UrunListState extends State<UrunList> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            satislar['Notlar'],
+            urunler['Urun_adi'],
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
           ),
           const SizedBox(
             height: 5,
           ),
           Text(
-            satislar['ToplamFiyat'].toString(),
+            urunler['Fiyati'].toString(),
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
           ),
           const SizedBox(
             height: 5,
           ),
           Text(
-            satislar['Id'].toString(),
+            urunler['Stok'].toString(),
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
           ),
           Row(
@@ -65,7 +65,7 @@ class _UrunListState extends State<UrunList> {
               ),
               GestureDetector(
                 onTap: () {
-                  reference.child(satislar['key']).remove();
+                  reference.child(urunler['key']).remove();
                 },
                 child: Row(
                   children: [
@@ -95,10 +95,10 @@ class _UrunListState extends State<UrunList> {
           query: dbRef,
           itemBuilder: (BuildContext context, DataSnapshot snapshot,
               Animation<double> animation, int index) {
-            Map satislar_list = snapshot.value as Map;
-            satislar_list['key'] = snapshot.key;
+            Map urun_list = snapshot.value as Map;
+            urun_list['key'] = snapshot.key;
 
-            return listItem(satislar: satislar_list);
+            return listItem(urunler: urun_list);
           },
         ),
       ),
