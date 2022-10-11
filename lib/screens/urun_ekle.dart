@@ -130,7 +130,8 @@ class _UrunEkleState extends State<UrunEkle> {
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all(Colors.green),
                         foregroundColor: MaterialStateProperty.all(Colors.white),
-                      )),
+                      )
+                  ),
                 ],
               ),
             ),

@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:firebase_test/screens/cart_screen.dart';
 import 'package:firebase_test/screens/satis_ekle.dart';
 import 'package:flutter/material.dart';
 
@@ -88,6 +89,17 @@ class _SatisListState extends State<SatisList> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Satışlar'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.shopping_cart_outlined,size: 40,color: Colors.white,),
+              onPressed: () {
+                Navigator.push(context,  MaterialPageRoute(builder: (context) => CartScreen()));
+              },
+            ),
+            const SizedBox(
+              height: 30,
+            )
+          ],
         ),
         body: Container(
           height: double.infinity,

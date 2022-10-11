@@ -3,8 +3,14 @@ import 'dart:ffi';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:firebase_test/models/product.dart';
 import 'package:firebase_test/screens/urun_ekle.dart';
+import 'package:firebase_test/screens/urun_guncelle.dart';
 import 'package:flutter/material.dart';
+
+import '../blocs/cart_bloc.dart';
+import '../models/cart.dart';
+import 'cart_screen.dart';
 
 class UrunList extends StatefulWidget {
   const UrunList({Key? key}) : super(key: key);
@@ -47,13 +53,20 @@ class _UrunListState extends State<UrunList> {
             "Stok: " + urunler['Stok'].toString(),
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
           ),
+          IconButton(
+              onPressed: () {
+                Product temp=Product.fromJson(urunler);
+                CartBloc().addToCart(Cart(temp, 1));
+              },
+              icon: Icon(Icons.add_shopping_cart)
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               GestureDetector(
                 onTap: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (_) => UpdateRecord(studentKey: student['key'])));
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => UrunGuncelle(urunID: urunler['key'])));
                 },
                 child: Row(
                   children: [
@@ -92,6 +105,15 @@ class _UrunListState extends State<UrunList> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ürünler'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.shopping_cart_outlined,size: 40,color: Colors.white,),
+            onPressed: () {
+              Navigator.push(context,  MaterialPageRoute(builder: (context) => CartScreen()));
+            },
+          ),
+
+        ],
       ),
       body: Container(
         height: double.infinity,

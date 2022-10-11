@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class UrunGuncelle extends StatefulWidget {
 
-  const UrunGuncelle({Key? key, required this.studentKey}) : super(key: key);
+  const UrunGuncelle({Key? key, required this.urunID}) : super(key: key);
 
-  final String studentKey;
+  final String urunID;
 
   @override
   State<UrunGuncelle> createState() => _UpdateRecordState();
@@ -13,9 +13,9 @@ class UrunGuncelle extends StatefulWidget {
 
 class _UpdateRecordState extends State<UrunGuncelle> {
 
-  final userNameController = TextEditingController();
-  final userAgeController = TextEditingController();
-  final userSalaryController = TextEditingController();
+  final productNameController = TextEditingController();
+  final productPriceController = TextEditingController();
+  final productStockController = TextEditingController();
 
   late DatabaseReference dbRef;
 
@@ -27,13 +27,13 @@ class _UpdateRecordState extends State<UrunGuncelle> {
   }
 
   void getStudentData() async {
-    DataSnapshot snapshot = await dbRef.child(widget.studentKey).get();
+    DataSnapshot snapshot = await dbRef.child(widget.urunID).get();
 
-    Map student = snapshot.value as Map;
+    Map urun = snapshot.value as Map;
 
-    userNameController.text = student['name'];
-    userAgeController.text = student['age'];
-    userSalaryController.text = student['salary'];
+    productNameController.text = urun['Urun_adi'];
+    productPriceController.text = urun['Fiyati'].toString();
+    productStockController.text = urun['Stok'].toString();
   }
 
 
@@ -41,29 +41,23 @@ class _UpdateRecordState extends State<UrunGuncelle> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Updating record'),
+        title: Text('Ürün Kaydı Güncelle'),
       ),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(8.0),
           child: Column(
             children: [
-              const SizedBox(
-                height: 50,
-              ),
-              const Text(
-                'Updating data in Firebase Realtime Database',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
+              Image.asset(
+                'assets/images/product.png',
+                height: 80,
+                width: 80,
               ),
               const SizedBox(
                 height: 30,
               ),
               TextField(
-                controller: userNameController,
+                controller: productNameController,
                 keyboardType: TextInputType.text,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
@@ -75,7 +69,7 @@ class _UpdateRecordState extends State<UrunGuncelle> {
                 height: 30,
               ),
               TextField(
-                controller: userAgeController,
+                controller: productPriceController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
@@ -87,8 +81,8 @@ class _UpdateRecordState extends State<UrunGuncelle> {
                 height: 30,
               ),
               TextField(
-                controller: userSalaryController,
-                keyboardType: TextInputType.phone,
+                controller: productStockController,
+                keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Salary',
@@ -101,18 +95,18 @@ class _UpdateRecordState extends State<UrunGuncelle> {
               MaterialButton(
                 onPressed: () {
                   Map<String, String> students = {
-                    'name': userNameController.text,
-                    'age': userAgeController.text,
-                    'salary': userSalaryController.text
+                    'Urun_adi': productNameController.text,
+                    'Fiyati': productPriceController.text,
+                    'Stok': productStockController.text
                   };
 
-                  dbRef.child(widget.studentKey).update(students)
+                  dbRef.child(widget.urunID).update(students)
                       .then((value) =>
                   {
                     Navigator.pop(context)
                   });
                 },
-                child: const Text('Update Data'),
+                child: const Text('Kaydı Güncelle'),
                 color: Colors.blue,
                 textColor: Colors.white,
                 minWidth: 300,
