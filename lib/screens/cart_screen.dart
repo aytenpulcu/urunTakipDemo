@@ -6,7 +6,6 @@ import '../models/cart.dart';
 class CartScreen extends StatelessWidget{  CartBloc cb=CartBloc();
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Sepet"),

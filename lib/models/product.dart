@@ -12,7 +12,7 @@ class Product{
     id = int.parse(json["Id"].toString());
     name = json["Urun_adi"];
     currency = json["ParaBirimi"];
-    price = double.parse(json["Fiyati"].toString()) ;
+    price =  double.parse(json["Fiyati"].toString());
     stock = int.parse(json["Stok"].toString());
     quantitySold = int.parse(json["SatilanMiktar"].toString());
   }

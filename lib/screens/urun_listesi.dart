@@ -1,5 +1,3 @@
-
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:firebase_test/models/product.dart';
@@ -107,15 +105,16 @@ class _UrunListState extends State<UrunList> {
       appBar: AppBar(
         title: const Text('Ürünler'),
         actions: [
+
           IconButton(
-              onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => SearchPage(list: urunList))),
+              onPressed: () {
+                showSearch(context: context, delegate: MySearchDelegate());
+              },
               icon: Icon(
                 Icons.search_outlined,
                 size: 30,
                 color: Colors.white,
-              )
-          ),
+              )),
           IconButton(
             icon: Icon(
               Icons.shopping_cart_outlined,
@@ -144,7 +143,6 @@ class _UrunListState extends State<UrunList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           reference.onValue.listen((DatabaseEvent event) {
-            keepID(event.snapshot.children.last.key.toString());
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -160,62 +158,133 @@ class _UrunListState extends State<UrunList> {
     );
   }
 
-  keepID(String length) {
-    print("len" + length.toString());
-  }
 }
 
-class SearchPage extends StatelessWidget {
-  SearchPage({Key? key, required this.list}) : super(key: key);
-  final Map list;
+class MySearchDelegate extends SearchDelegate {
+  late String _search;
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    Padding(
+      padding: const EdgeInsets.only(
+          bottom: 12.0, left: 12.0, right: 12.0),
+      child: TextField(
+        onChanged: (newvalue) {
+          _search = newvalue;
+        },
+        textAlign: TextAlign.center,
+        decoration: InputDecoration(
+          hintText: 'Type Here',
+          icon: Icon(Icons.search),
+          border: OutlineInputBorder(),
+        ),
+      ),
+    );
+    IconButton(
+      icon: Icon(Icons.clear),
+      onPressed: (){
+        if(query.isEmpty){
+          close(context, null);
+        }
+        else{
+          query='';
+        }
+      },
+    );
+  }
 
   @override
-  Widget build(BuildContext context) {
-    Map found=Map();
-    final List<int> colorCodes = <int>[600, 500, 100];
-    return Scaffold(
-      appBar: AppBar(
-          // The search area here
-          title: Container(
-        width: double.infinity,
-        height: 40,
-        decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(5)),
-        child: Center(
-          child: TextField(
-            onSubmitted: (value) {
-              list.keys.forEach((element) {
-                if (element==value){
-                  found[element]=list[element];
-                }
-              });
-            },
-            decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
+  Widget? buildLeading(BuildContext context) {
+    IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: ()=>close(context, null),
+    );
+  }
 
-                  },
-                ),
-                hintText: 'Search...',
-                border: InputBorder.none),
+  @override
+  Widget buildResults(BuildContext context) {
+    if (_search != null) {
+      _searchResult = createResult();
+    }
+    return _searchResult.first;
+  }
+  List<Widget> _searchResult = [];
+  @override
+  Widget buildSuggestions(BuildContext context) {
+
+     if (_search != null) {
+       _searchResult = createResult();
+     }
+     return _searchResult.first;
+  }
+  createResult() async {
+    DatabaseReference reference =
+    FirebaseDatabase.instance.ref().child('tbl_urunler');
+    RegExp regExp = RegExp(
+      "/*$_search/*",
+      caseSensitive: false,
+    );
+    List<Widget> searchResult = [];
+
+    reference
+        .once()
+        .then((DatabaseEvent list) {
+      if (list != null) {
+
+        for (var urun in list.snapshot.children) {
+          var temp=urun.value as Map;
+          temp['key']=urun.key;
+          if (regExp.hasMatch(temp[urun.key])) {
+            searchResult.add(addElement(
+                name: temp[urun.key]["Urun_adi"],
+                price: temp[urun.key]["Fiyatı"],
+                stock: temp[urun.key]["Stok"],
+                quantitySold: temp[urun.key]["SatilanMiktar"],
+                currency: temp[urun.key]["ParaBirimi"],
+                key: urun.key));
+          }
+        }
+      }
+    });
+    return searchResult;
+  }
+
+  Widget addElement({required String name, price, stock, quantitySold, currency, key}) {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: ElevatedButton(
+        onPressed: () {
+
+        },
+        child: Container(
+          padding: EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.blue),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    name,
+                  ),
+                  Text(
+                    price.toString()+currency.toString(),
+                  )
+                ],
+              ),
+              Text(
+                stock.toString(),
+              ),
+              Text(
+                quantitySold.toString(),
+              )
+            ],
           ),
         ),
-      )),
-      body: Center(
-        child: ListView.builder(
-            padding: const EdgeInsets.all(8),
-            itemCount: found.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                height: 50,
-                color: Colors.amber[colorCodes[index]],
-                child: Center(child: Text('Entry ${found[index]}')),
-              );
-            }
-        )
       ),
     );
   }
 }
+
