@@ -136,6 +136,7 @@ class _UrunListState extends State<UrunList> {
               Animation<double> animation, int index) {
             urunList = snapshot.value as Map;
             urunList['key'] = snapshot.key;
+
             return listItem(urunler: urunList);
           },
         ),
@@ -161,130 +162,78 @@ class _UrunListState extends State<UrunList> {
 }
 
 class MySearchDelegate extends SearchDelegate {
-  late String _search;
+
+  List<String> searchTerms = findList();
+
+
+
   @override
-  List<Widget>? buildActions(BuildContext context) {
-    Padding(
-      padding: const EdgeInsets.only(
-          bottom: 12.0, left: 12.0, right: 12.0),
-      child: TextField(
-        onChanged: (newvalue) {
-          _search = newvalue;
-        },
-        textAlign: TextAlign.center,
-        decoration: InputDecoration(
-          hintText: 'Type Here',
-          icon: Icon(Icons.search),
-          border: OutlineInputBorder(),
-        ),
-      ),
-    );
-    IconButton(
-      icon: Icon(Icons.clear),
-      onPressed: (){
-        if(query.isEmpty){
-          close(context, null);
-        }
-        else{
-          query='';
-        }
-      },
-    );
+  List<Widget> buildActions(BuildContext context) {
+
+    return[
+      IconButton(onPressed: (){
+        query = '';
+      }, icon: const Icon(Icons.clear))
+    ];
+
+
   }
 
   @override
-  Widget? buildLeading(BuildContext context) {
-    IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: ()=>close(context, null),
-    );
+  Widget buildLeading(BuildContext context) {
+    return IconButton(onPressed: () {
+      close(context, null);
+    }, icon: const Icon(Icons.arrow_back));
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    if (_search != null) {
-      _searchResult = createResult();
+    List<String> matchQuery = [];
+    for(var fruit in searchTerms)
+    {
+      if(fruit.toLowerCase().contains(query.toLowerCase())){
+        matchQuery.add(fruit);
+      }
     }
-    return _searchResult.first;
+    return ListView.builder(itemBuilder: (context,index){
+      var result = matchQuery[index];
+      return ListTile(
+        title: Text(result),
+      );
+    },itemCount: matchQuery.length,);
   }
-  List<Widget> _searchResult = [];
+
   @override
   Widget buildSuggestions(BuildContext context) {
 
-     if (_search != null) {
-       _searchResult = createResult();
-     }
-     return _searchResult.first;
+    List<String> matchQuery = [];
+
+    for(var fruit in searchTerms)
+    {
+      if(fruit.toLowerCase().contains(query.toLowerCase()))
+      {
+        matchQuery.add(fruit);
+      }
+    }
+
+    return ListView.builder(itemBuilder: (context,index){
+      var result = matchQuery[index];
+      return ListTile(title: Text(result),);
+    },itemCount: matchQuery.length,);
   }
-  createResult() async {
-    DatabaseReference reference =
-    FirebaseDatabase.instance.ref().child('tbl_urunler');
-    RegExp regExp = RegExp(
-      "/*$_search/*",
-      caseSensitive: false,
-    );
-    List<Widget> searchResult = [];
 
-    reference
-        .once()
-        .then((DatabaseEvent list) {
-      if (list != null) {
-
-        for (var urun in list.snapshot.children) {
-          var temp=urun.value as Map;
-          temp['key']=urun.key;
-          if (regExp.hasMatch(temp[urun.key])) {
-            searchResult.add(addElement(
-                name: temp[urun.key]["Urun_adi"],
-                price: temp[urun.key]["Fiyatı"],
-                stock: temp[urun.key]["Stok"],
-                quantitySold: temp[urun.key]["SatilanMiktar"],
-                currency: temp[urun.key]["ParaBirimi"],
-                key: urun.key));
-          }
-        }
+  static List<String> findList() {
+    List<String> keep=<String>[];
+    DatabaseReference reference = FirebaseDatabase.instance.ref().child('tbl_urunler');
+    reference.onValue.listen((DatabaseEvent event) {
+      for (final child in event.snapshot.children) {
+        keep.add(child.value.toString());
       }
     });
-    return searchResult;
+    print("keep size:" + keep.length.toString());
+    return keep;
   }
 
-  Widget addElement({required String name, price, stock, quantitySold, currency, key}) {
-    return Padding(
-      padding: const EdgeInsets.all(5.0),
-      child: ElevatedButton(
-        onPressed: () {
 
-        },
-        child: Container(
-          padding: EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.blue),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    name,
-                  ),
-                  Text(
-                    price.toString()+currency.toString(),
-                  )
-                ],
-              ),
-              Text(
-                stock.toString(),
-              ),
-              Text(
-                quantitySold.toString(),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 

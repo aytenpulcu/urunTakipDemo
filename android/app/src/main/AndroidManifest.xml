@@ -2,9 +2,9 @@
     package="com.example.firebase_test">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
    <application
-        android:label="firebase_test"
+        android:label="Ürün Takip Demo"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
