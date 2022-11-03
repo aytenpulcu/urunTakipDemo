@@ -13,8 +13,6 @@ class UrunEkle extends StatefulWidget {
 class _UrunEkleState extends State<UrunEkle> {
   final _formKey = GlobalKey<FormState>();
 
-
-
   _UrunEkleState({required this.last_id});
   var last_id;
   final productNameController = TextEditingController();
@@ -109,7 +107,8 @@ class _UrunEkleState extends State<UrunEkle> {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {dbRef.set({
+                        if (_formKey.currentState!.validate()) {
+                          dbRef.set({
                           'Id': last_id.toString(),
                           'Urun_adi': productNameController.text,
                           'Fiyati': productPriceController.text,

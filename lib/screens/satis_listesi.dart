@@ -117,10 +117,20 @@ class _SatisListState extends State<SatisList> {
         ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SatisEkle())
-          );
+          reference.onValue.listen((DatabaseEvent event) {
+            var keep;
+            if(event.snapshot.children.isEmpty){
+              keep="0";
+            }else{
+              keep=event.snapshot.children.last.key.toString();
+            }
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SatisEkle(
+                        id: keep)));
+          });
+
         },
         child: const Icon(Icons.add),
         shape: RoundedRectangleBorder(
